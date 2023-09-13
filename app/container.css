@@ -1,0 +1,27 @@
+/* CSS */
+.container {
+    max-width: 100%;
+    padding:300px;
+    margin: 50px auto; /* Center the container horizontally */
+    border: 1px solid #333; /* Add a 2px solid border with color #333 */
+    border-radius: 10px;
+  }
+  .content {
+    text-align: center;
+  }
+
+  .header {
+    max-width: 100%;
+    padding: 20px;
+    margin: 0 auto; /* Center the container horizontally */
+    border-radius: 10px;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    /* Adjust styles for smaller screens */
+    .container {
+      padding: 10px;
+    }
+  }
+  
