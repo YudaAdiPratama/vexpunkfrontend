@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   useAccount,
@@ -17,6 +17,12 @@ import { AppDispatch, useAppSelector } from "@/redux/store";
 import { useToast } from "@/components/ui/use-toast"
 import { setNftMaxSupply } from "@/redux/features/nftMaxSupplySlice";
 import { setNftTotalMinted } from "@/redux/features/nftTotalMintedSlice";
+import {create} from 'ipfs-http-client';
+import { fetchDataSuccess } from "@/redux/features/ipfsMetadataSlice";
+import { setNftName } from "@/redux/features/nftNameSlice";
+import { setNftImage } from "@/redux/features/nftImageSlice";
+import { setNftDescription } from "@/redux/features/nftDescriptionSlice";
+
 
 
 const MintSection = () => {
@@ -26,6 +32,41 @@ const MintSection = () => {
   const balanceOf = useAppSelector((state) => state.nftsBalancesOf.balancesOf);
   const maxSupply = useAppSelector((state) => state.nftMaxSupply.maxSupply);
   const totalMinted = useAppSelector((state) => state.nftTotalMinted.totalMinted);
+  const ipfs = create({ host: 'ipfs.io', port: 443, protocol: 'https' });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const fetchFromIPFS = async () => {
+    let totalMint = totalMinted; 
+    const income = Number(totalMint) + 1;
+    if(totalMinted) {
+    try {
+      const cid = `QmXzSw8616AGdDvJDg15dBWdYdt3tzdxoW8jwTzHrRu77w/${income}.json`; // Replace with the CID of the metadata you want to fetch from IPFS
+      const metadataChunks = [];
+
+      for await (const chunk of ipfs.cat(cid)) {
+        metadataChunks.push(chunk);
+      }
+
+      // Concatenate the chunks into a single Uint8Array
+      const metadataUint8Array = new Uint8Array(metadataChunks.reduce((acc, chunk) => {
+        const newAcc = new Uint8Array(acc.length + chunk.length);
+        newAcc.set(acc, 0);
+        newAcc.set(chunk, acc.length);
+        return newAcc;
+      }, new Uint8Array(0)));
+
+      const metadataString = new TextDecoder().decode(metadataUint8Array);
+      const metadataObject = JSON.parse(metadataString);
+      // console.log(metadataObject.name)
+      dispatch(setNftName(metadataObject.name))
+      dispatch(setNftImage(metadataObject.image))
+      dispatch(setNftDescription(metadataObject.description))
+    } catch (error) {
+      // setError('Error fetching metadata from IPFS: ' + error.message);
+    }
+    }
+  };
+
   const { data, isSuccess, isLoading, refetch } = useContractRead({
     address: process.env.NEXT_PUBLIC_NFT_CONTRACT,
     abi: nftAbi,
@@ -77,11 +118,12 @@ const MintSection = () => {
     const hasmint = hasMintedData as string;
     dispatch(setNftMaxSupply(maxSup.toString()))
     dispatch(setNftTotalMinted(hasmint.toString()))
-  }, [address, balanceOf, data, dispatch, hasMintedData, maxSupplyData])
+    fetchFromIPFS();
+  }, [address, balanceOf, data, dispatch, fetchFromIPFS, hasMintedData, maxSupplyData])
 
-  console.log('balances', balanceOf)
-  console.log('max supply', maxSupply)
-  console.log('total minted', totalMinted)
+  // console.log('balances', balanceOf)
+  // console.log('max supply', maxSupply)
+  // console.log('total minted', totalMinted)
   
 
   const handleMint = async () => {
@@ -91,8 +133,7 @@ const MintSection = () => {
       value: mintingCostInWei,
     });
   };
-
-  console.log(mintingCostInWei)
+  
   return (
     <div className="h-full mt-4 lg:flex lg:flex-col lg:justify-evenly lg:items-center">
       <p>
@@ -115,12 +156,6 @@ const MintSection = () => {
       <div className="flex justify-center items-center mt-100">
         <StyledButton color="pink" onClick={handleMint}>
           Mint
-        </StyledButton>
-        <StyledButton color="pink" onClick={() => {toast({
-                title: "Uh oh! Something went wrong.",
-                description: "There was a problem with your request.",
-              })}}>
-          TEST
         </StyledButton>
       </div>
     </div>
