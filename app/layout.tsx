@@ -1,7 +1,7 @@
 import { ThemeProvider } from "@/components/theme-provider"
 import Providers from './_providers/Providers'
 import { Inter } from 'next/font/google'
-import { ReduxProvider } from "@/redux/procider";
+import { ReduxProvider } from "@/redux/provider";
 import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ['latin'] })
