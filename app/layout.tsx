@@ -27,7 +27,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Providers>
             <ReduxProvider>
+              <div className="min-h-screen flex flex-col justify-center items-center px-4">
             {children}
+            </div>
               <Toaster />
             </ReduxProvider>
           </Providers>

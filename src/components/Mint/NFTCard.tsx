@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card"
 import { useAppSelector } from "@/redux/store";
 import { Button } from "../ui/button";
+import { ModeToggle } from "../ModeToggle";
 
 
 const MintSection = dynamic(
@@ -25,11 +26,13 @@ export const NFTCard = () => {
 
   const imageUri = nftImage.replace('ipfs://', 'https://ipfs.io/ipfs/');
   return (
-    <Card className="w-[350px]">
+    <Card >
       <CardHeader>
+        <ModeToggle />
       <CardTitle className="text-xl font-bold text-gray-400">{nftName}</CardTitle>
       </CardHeader>
       <CardContent>
+      <div className="h-48 mb-4 flex items-center justify-center">
       {imageUri &&
       <Image 
       width={200}
@@ -37,6 +40,7 @@ export const NFTCard = () => {
       src={imageUri} 
       alt="NFT" />
     }
+    </div>
       <MintSection />
       </CardContent>
     </Card>

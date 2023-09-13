@@ -15,7 +15,6 @@ export default function Home() {
         <div className='connect-btn'>
       <Web3Button />
       </div>
-      <ModeToggle />
         <div className='content'>
           <NFTCard />
         </div>

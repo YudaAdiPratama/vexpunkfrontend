@@ -74,3 +74,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Responsive Design Classes */
+@screen sm {
+  .sm\:bg-mobile {
+    /* Define mobile-specific background styles here */
+  }
+  .sm\:text-mobile {
+    /* Define mobile-specific text styles here */
+  }
+}
+
+@screen md {
+  .md\:bg-mid {
+    /* Define mid-sized screen background styles here */
+  }
+  .md\:text-mid {
+    /* Define mid-sized screen text styles here */
+  }
+}
