@@ -18,10 +18,13 @@ import { useToast } from "@/components/ui/use-toast"
 import { setNftMaxSupply } from "@/redux/features/nftMaxSupplySlice";
 import { setNftTotalMinted } from "@/redux/features/nftTotalMintedSlice";
 import {create} from 'ipfs-http-client';
-import { fetchDataSuccess } from "@/redux/features/ipfsMetadataSlice";
 import { setNftName } from "@/redux/features/nftNameSlice";
 import { setNftImage } from "@/redux/features/nftImageSlice";
 import { setNftDescription } from "@/redux/features/nftDescriptionSlice";
+import MintButtonModal from "../ui/MintButton";
+import { Button } from "../ui/button";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { CardDescription} from "../ui/card";
 
 
 
@@ -32,6 +35,7 @@ const MintSection = () => {
   const balanceOf = useAppSelector((state) => state.nftsBalancesOf.balancesOf);
   const maxSupply = useAppSelector((state) => state.nftMaxSupply.maxSupply);
   const totalMinted = useAppSelector((state) => state.nftTotalMinted.totalMinted);
+  const [buttonLoading, setButtonLoad] = useState(false)
   const ipfs = create({ host: 'ipfs.io', port: 443, protocol: 'https' });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -67,7 +71,7 @@ const MintSection = () => {
     }
   };
 
-  const { data, isSuccess, isLoading, refetch } = useContractRead({
+  const { data, isSuccess, isLoading, isError, refetch } = useContractRead({
     address: process.env.NEXT_PUBLIC_NFT_CONTRACT,
     abi: nftAbi,
     functionName: "balanceOf",
@@ -88,19 +92,33 @@ const MintSection = () => {
     args: [],
   });
 
-  const { data: writeData, write } = useContractWrite({
+  const { data: writeData, isError: writeError, write } = useContractWrite({
     address: process.env.NEXT_PUBLIC_NFT_CONTRACT,
     abi: nftAbi,
     functionName: "mint",
     account: address,
   });
+  const slicedDataFirstPart = writeData?.hash.slice(0, 10);
+        const slicedDataSecondPart = writeData?.hash.slice(-10);
+      const message = (
+        <>
+          <a href={`https://testnet.bscscan.com/tx/${writeData?.hash}`} target="_blank" rel="noopener noreferrer">
+          {slicedDataFirstPart}..{slicedDataSecondPart}
+          </a>
+        </>
+      );
   useWaitForTransaction({
     hash: writeData?.hash,
     onSuccess() {
       refetch();
       maxSupplyRefetch();
       hasMintedRefetch();
-    },
+      setButtonLoad(false)
+      toast({
+        title: "Transaction Success",
+        description: message,
+      })
+    }
   });
   const mintingCostInEth = 1000000000
   const mintingCostInWei = ethers.parseUnits(mintingCostInEth.toString(), 'wei');
@@ -132,10 +150,12 @@ const MintSection = () => {
       args: [],
       value: mintingCostInWei,
     });
+    setButtonLoad(true)
   };
   
   return (
     <div className="h-full mt-4 lg:flex lg:flex-col lg:justify-evenly lg:items-center">
+      <CardDescription>
       <p>
         Max Supply:{" "}
         {!maxSupply && <span className="font-semibold">loading...</span>}
@@ -153,10 +173,19 @@ const MintSection = () => {
         {balanceOf && (balanceOf as any).toString()}
       </p>
       }
+      </CardDescription>
       <div className="flex justify-center items-center mt-100">
-        <StyledButton color="pink" onClick={handleMint}>
+        { !buttonLoading &&
+        <Button color="red" onClick={handleMint}>
           Mint
-        </StyledButton>
+        </Button>
+        }
+        {buttonLoading &&
+        <Button disabled>
+          <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+          Please wait
+        </Button>
+        }
       </div>
     </div>
   );

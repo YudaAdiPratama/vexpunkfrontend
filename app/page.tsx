@@ -5,6 +5,8 @@ import './container.css';
 import './walletconnect.css';
 import { Web3Button } from '@web3modal/react';
 import { NFTCard } from '@/components/Mint';
+import ConnectButtonModal from '@/components/ui/connectButton';
+import walletIcon from './assets/wallet.svg'
 
 
 
@@ -14,6 +16,7 @@ export default function Home() {
     <div className='header'>
         <div className='connect-btn'>
       <Web3Button />
+      {/* <ConnectButtonModal icon={walletIcon} color={"red"} onClick={undefined}>CONNECT</ConnectButtonModal> */}
       </div>
         <div className='content'>
           <NFTCard />

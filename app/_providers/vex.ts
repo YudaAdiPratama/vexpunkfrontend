@@ -1,17 +1,17 @@
 import { defineChain } from "viem"
 
 export const vex = /*#__PURE__*/ defineChain({
-  id: 1337,
-  name: 'ETH',
-  network: 'Ethereum',
+  id: 97,
+  name: 'VEX',
+  network: 'VEXEVM',
   nativeCurrency: {
     decimals: 18,
-    name: 'Ether',
-    symbol: 'ETH',
+    name: 'Vex',
+    symbol: 'VEX',
   },
   rpcUrls: {
-    default: { http: ['http://127.0.0.1:7545'] },
-    public: { http: ['http://127.0.0.1:7545'] },
+    default: { http: ['https://testnet.vexascan.com/evmapi'] },
+    public: { http: ['https://testnet.vexascan.com/evmapi'] },
   },
   blockExplorers: {
     etherscan: {
