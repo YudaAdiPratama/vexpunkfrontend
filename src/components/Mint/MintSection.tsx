@@ -102,7 +102,7 @@ const MintSection = () => {
         const slicedDataSecondPart = writeData?.hash.slice(-10);
       const message = (
         <>
-          <a href={`https://testnet.bscscan.com/tx/${writeData?.hash}`} target="_blank" rel="noopener noreferrer">
+          <a href={`https://testnet.vexascan.com/tx/${writeData?.hash}`} target="_blank" rel="noopener noreferrer">
           {slicedDataFirstPart}..{slicedDataSecondPart}
           </a>
         </>
@@ -120,8 +120,8 @@ const MintSection = () => {
       })
     }
   });
-  const mintingCostInEth = 1000000000
-  const mintingCostInWei = ethers.parseUnits(mintingCostInEth.toString(), 'wei');
+  const mintingCostInEth = 1; // Set to 1 Ether
+  const mintingCostInWei = ethers.parseEther(mintingCostInEth.toString());  
   
   useEffect(() => {
     const nftBalance = data as string;

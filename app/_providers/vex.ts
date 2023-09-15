@@ -1,12 +1,12 @@
 import { defineChain } from "viem"
 
 export const vex = /*#__PURE__*/ defineChain({
-  id: 97,
-  name: 'VEX',
-  network: 'VEXEVM',
+  id: 5522,
+  name: 'VEX EVM',
+  network: 'vex',
   nativeCurrency: {
     decimals: 18,
-    name: 'Vex',
+    name: 'VEX',
     symbol: 'VEX',
   },
   rpcUrls: {
@@ -22,12 +22,5 @@ export const vex = /*#__PURE__*/ defineChain({
       name: 'VEX EVM Explorer',
       url: 'https://testnet.vexascan.com/evmexplorer',
     },
-  },
-  contracts: {
-    multicall3: {
-      address: '0xbBbBBbBbbbBbbBbbbBbbbBBbdaba056e40000000',
-      blockCreated: 1,
-    },
-  },
-  testnet: true
+  }
 })

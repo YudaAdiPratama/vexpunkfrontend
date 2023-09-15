@@ -14,7 +14,7 @@ type WagmiProviderType = {
   children: React.ReactNode;
 };
 
-const chains = [bscTestnet];
+const chains = [vex];
 const projectId = "5cc5b43805e7ff036b98a55d2f7a1d72";
 
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
