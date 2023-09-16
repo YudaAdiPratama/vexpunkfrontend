@@ -13,8 +13,8 @@ type RootLayoutProps = {
 };
 
 export const metadata = {
-  title: 'Next13 Web3',
-  description: 'A Web3 Example on using NextJs 13',
+  title: 'VEX PUNK',
+  description: 'This Dapp For Minting Vex Punk NFT ',
 }
 
 // Your RootLayout component
