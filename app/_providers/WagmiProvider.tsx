@@ -24,16 +24,27 @@ const wagmiConfig = createConfig({
   publicClient,
 });
 
-const ethereumClient = new EthereumClient(wagmiConfig, chains);
+export const ethereumClient = new EthereumClient(wagmiConfig, chains);
 const WagmiProvider = ({ children }: WagmiProviderType) => {
+// const logaddress = useAppSelector((state) => state.account.account);
+// console.log(logaddress)
   return (
     <>
       <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>
-      <Web3Modal themeVariables={{
+      <Web3Modal 
+      tokenImages={{
+        VEX: 'https://ipfs.io/ipfs/QmUqvjrd3Tcyu4G9WKjvCmVA6zC2Qrn2fzecyPAzAmwVDs'
+      }}
+      chainImages={{
+        '5522': 'https://ipfs.io/ipfs/QmUqvjrd3Tcyu4G9WKjvCmVA6zC2Qrn2fzecyPAzAmwVDs'
+      }}
+      themeMode="dark"
+      themeVariables={{
     '--w3m-font-family': 'Roboto, sans-serif',
     '--w3m-accent-color': '#0F4DE6',
     '--w3m-background-image-url': 'https://web3modal.com/images/theme_bg.png'
-  }} projectId={projectId} ethereumClient={ethereumClient} />
+  }} 
+  projectId={projectId} ethereumClient={ethereumClient} />
     </>
   );
 };

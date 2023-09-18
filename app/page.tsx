@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <div className='header'>
         <div className='connect-btn'>
-      <Web3Button />
+      <Web3Button balance='show' icon='show' avatar='show' />
       {/* <ConnectButtonModal icon={walletIcon} color={"red"} onClick={undefined}>CONNECT</ConnectButtonModal> */}
       </div>
         <div className='content'>

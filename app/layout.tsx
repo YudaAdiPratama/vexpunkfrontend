@@ -24,7 +24,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <html lang="en" suppressHydrationWarning>
         <head />
         <body className={inter.className}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <Providers>
             <ReduxProvider>
               <div className="min-h-screen flex flex-col justify-center items-center px-4">

@@ -5,6 +5,7 @@ import nftBalancesOfSlice from './features/nftBalancesOfSlice';
 import nftTotalMintedSlice from './features/nftTotalMintedSlice';
 import nftImageSlice from './features/nftImageSlice';
 import nftNameSlice from './features/nftNameSlice';
+import accountSlice from './features/accountSlice';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import nftDescriptionSlice from './features/nftDescriptionSlice';
 
@@ -15,7 +16,8 @@ export const store = configureStore({
     nftTotalMinted: nftTotalMintedSlice,
     nftName: nftNameSlice,
     nftImage: nftImageSlice,
-    nftDescription: nftDescriptionSlice
+    nftDescription: nftDescriptionSlice,
+    account: accountSlice
     // other reducers if any
   },
 });

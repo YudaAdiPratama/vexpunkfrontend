@@ -25,6 +25,9 @@ import MintButtonModal from "../ui/MintButton";
 import { Button } from "../ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { CardDescription} from "../ui/card";
+import { setaccounts } from "@/redux/features/accountSlice";
+import { ethereumClient } from "../../../app/_providers/WagmiProvider";
+import WarningBox from "../ui/WarnningBox";
 
 
 
@@ -36,7 +39,10 @@ const MintSection = () => {
   const maxSupply = useAppSelector((state) => state.nftMaxSupply.maxSupply);
   const totalMinted = useAppSelector((state) => state.nftTotalMinted.totalMinted);
   const [buttonLoading, setButtonLoad] = useState(false)
+  const [mintAllow, setMntAllow] = useState(false)
+  const [balanceOfVex, setBalanceOfVex] = useState("")
   const ipfs = create({ host: 'ipfs.io', port: 443, protocol: 'https' });
+  
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchFromIPFS = async () => {
@@ -121,9 +127,13 @@ const MintSection = () => {
     }
   });
   const mintingCostInEth = 1; // Set to 1 Ether
-  const mintingCostInWei = ethers.parseEther(mintingCostInEth.toString());  
+  const minGasFee = 1;
+  const mintingCostInWei = ethers.parseEther(mintingCostInEth.toString());
+  const mintReq = mintingCostInEth + minGasFee
+  const mintReqInWei = ethers.parseEther(mintReq.toString());
   
   useEffect(() => {
+    const fetchData = async () => {
     const nftBalance = data as string;
     if(nftBalance)
     {
@@ -132,17 +142,36 @@ const MintSection = () => {
         const zero = 0;
         dispatch(setNftBalances(zero.toString()))
     }
+    if(address){
+      dispatch(setaccounts(address))
+      try {
+        const balances = await ethereumClient.fetchBalance({
+          address: address,
+          chainId: 5522, // Replace with the desired chain ID
+          formatUnits: "ether"
+        });
+        setBalanceOfVex(balances.value.toString())
+        if(mintReqInWei > balances.value){
+          setMntAllow(false)
+        }else{
+          setMntAllow(true)
+        }
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+      }
+    }
     const maxSup = maxSupplyData as string;
     const hasmint = hasMintedData as string;
     dispatch(setNftMaxSupply(maxSup.toString()))
     dispatch(setNftTotalMinted(hasmint.toString()))
     fetchFromIPFS();
-  }, [address, balanceOf, data, dispatch, fetchFromIPFS, hasMintedData, maxSupplyData])
+  }
+  fetchData();
+  }, [address, balanceOf, data, dispatch, fetchFromIPFS, hasMintedData, maxSupplyData, mintReqInWei])
 
   // console.log('balances', balanceOf)
   // console.log('max supply', maxSupply)
   // console.log('total minted', totalMinted)
-  
 
   const handleMint = async () => {
     console.log(process.env.NEXT_PUBLIC_NFT_CONTRACT)
@@ -168,14 +197,14 @@ const MintSection = () => {
       </p>
       {address && 
       <p>
-        Your Balance:{" "}
+        My NFTs :{" "}
         {!balanceOf && <span className="font-semibold">loading...</span>}
         {balanceOf && (balanceOf as any).toString()}
       </p>
       }
       </CardDescription>
       <div className="flex justify-center items-center mt-100">
-        { !buttonLoading &&
+        { !buttonLoading && mintAllow &&
         <Button color="red" onClick={handleMint}>
           Mint
         </Button>
@@ -185,6 +214,9 @@ const MintSection = () => {
           <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
           Please wait
         </Button>
+        }
+        { balanceOfVex && !mintAllow &&
+         <WarningBox />
         }
       </div>
     </div>
